@@ -1,0 +1,32 @@
+﻿@model AudioStore.Models.Manufacturer
+
+<form method="post">
+    <div class="border">
+        <div class="row pb-2">
+            <h2 class=" text-primary">@(Model.ManufacturerID!=0?"Edit Manufacturer":"Create Manufacturer")</h2>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Country"></label>
+            <input asp-for="Country" class="form-control" />
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="ManufacturerID" />
+
+        <button type="submit" class="btn btn-primary" style="width:150px">@(Model.ManufacturerID != 0 ? "Edit" : "Create")</button>
+        <a asp-controller="Manufacturer" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

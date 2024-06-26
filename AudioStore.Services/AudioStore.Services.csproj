@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AudioStore.DataAccess\AudioStore.DataAccess.csproj" />
+    <ProjectReference Include="..\AudioStore.Models\AudioStore.Models.csproj" />
+    <ProjectReference Include="..\AudioStore.Services.Interfaces\AudioStore.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

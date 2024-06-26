@@ -1,0 +1,25 @@
+﻿<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Manufacturer List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Manufacturer" asp-action="Upsert" class="btn btn-primary">Create Category</a>
+        </div>
+    </div>
+
+
+    <table id="tblData" class="table">
+        <thead>
+            <tr>
+                <th>Manufacturer Name</th>
+                <th>Country</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/manufacturer.js"></script>
+}

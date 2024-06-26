@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Web", "AudioStore.Web\AudioStore.Web.csproj", "{07602254-553D-497A-A164-C822500A1394}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Models", "AudioStore.Models\AudioStore.Models.csproj", "{7B9120D2-FC08-484E-A38F-27A19EF640EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.DataAccess", "AudioStore.DataAccess\AudioStore.DataAccess.csproj", "{AA592DF0-F69C-477E-BE78-A62313A6CEED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{08D76FB8-0C5A-4D8A-B6FF-D6125B530D0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{7D80DD65-65D6-49EC-881D-2C9058F2A113}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7642B386-D912-4E4D-BE07-F58B50AEC616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.Services", "AudioStore.Services\AudioStore.Services.csproj", "{E644335B-1426-4324-A797-CC6A5787174D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.Services.Interfaces", "AudioStore.Services.Interfaces\AudioStore.Services.Interfaces.csproj", "{E6F57697-3584-4245-A0C1-48A353654A72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07602254-553D-497A-A164-C822500A1394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07602254-553D-497A-A164-C822500A1394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07602254-553D-497A-A164-C822500A1394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07602254-553D-497A-A164-C822500A1394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B9120D2-FC08-484E-A38F-27A19EF640EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B9120D2-FC08-484E-A38F-27A19EF640EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B9120D2-FC08-484E-A38F-27A19EF640EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B9120D2-FC08-484E-A38F-27A19EF640EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA592DF0-F69C-477E-BE78-A62313A6CEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA592DF0-F69C-477E-BE78-A62313A6CEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA592DF0-F69C-477E-BE78-A62313A6CEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA592DF0-F69C-477E-BE78-A62313A6CEED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E644335B-1426-4324-A797-CC6A5787174D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E644335B-1426-4324-A797-CC6A5787174D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E644335B-1426-4324-A797-CC6A5787174D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E644335B-1426-4324-A797-CC6A5787174D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F57697-3584-4245-A0C1-48A353654A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F57697-3584-4245-A0C1-48A353654A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F57697-3584-4245-A0C1-48A353654A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F57697-3584-4245-A0C1-48A353654A72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B9120D2-FC08-484E-A38F-27A19EF640EA} = {08D76FB8-0C5A-4D8A-B6FF-D6125B530D0B}
+		{AA592DF0-F69C-477E-BE78-A62313A6CEED} = {7D80DD65-65D6-49EC-881D-2C9058F2A113}
+		{E644335B-1426-4324-A797-CC6A5787174D} = {7642B386-D912-4E4D-BE07-F58B50AEC616}
+		{E6F57697-3584-4245-A0C1-48A353654A72} = {7642B386-D912-4E4D-BE07-F58B50AEC616}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {798F988E-4E7F-4DC7-829F-E5AC735A3670}
+	EndGlobalSection
+EndGlobal
