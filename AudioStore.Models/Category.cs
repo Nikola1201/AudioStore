@@ -11,6 +11,8 @@ namespace AudioStore.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+        [ValidateNever]
+        public string ImageUrl { get; set; }
         public int? SuperCategoryID { get; set; }
         [ForeignKey("SuperCategoryID")]
         [ValidateNever]
@@ -18,5 +20,6 @@ namespace AudioStore.Models
         [ValidateNever]
 
         public virtual ICollection<Category> SubCategories { get; set; }
+       
     }
 }

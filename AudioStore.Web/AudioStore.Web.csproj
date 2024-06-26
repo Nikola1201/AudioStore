@@ -19,6 +19,9 @@
     <ProjectReference Include="..\AudioStore.Services\AudioStore.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\CategoryCustomer\" />
+    <Folder Include="Views\ManufacturerCustomer\" />
+    <Folder Include="Views\ProductCustomer\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 

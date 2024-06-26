@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace AudioStore.Models
 {
@@ -12,5 +13,7 @@ namespace AudioStore.Models
         [MaxLength(100)]
         public string Country { get; set; }
         public string Description { get; set; }
+        [ValidateNever]
+        public string ImageUrl { get; set; }
     }
 }
