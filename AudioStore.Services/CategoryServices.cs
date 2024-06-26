@@ -61,7 +61,11 @@ namespace AudioStore.Services
             return result;
         }
 
-
+        public Task<List<Category>> GetAllSubCategories(int id)
+        {
+            var subCategories = Context.Categories.Where(x => x.SuperCategoryID == id);
+            return subCategories.ToListAsync();
+        }
         public Task<Category> GetCategoryById(int? id)
         {
             return Context.Categories.FirstOrDefaultAsync(x => x.CategoryID == id);

@@ -41,7 +41,9 @@ namespace AudioStore.Services
 
         public async Task<List<Product>> GetAllProducts()
         {
-           return await Context.Products.ToListAsync();
+           IQueryable<Product> query = Context.Products;
+            query=query.Include(p => p.Category).Include(p => p.Manufacturer);
+            return await query.ToListAsync();
         }
 
         public Task<Product> GetProductById(int? id)
@@ -55,21 +57,6 @@ namespace AudioStore.Services
             await Context.SaveChangesAsync();
             return product;
         }
-        public async Task<List<ProductVM>> GetProductVMs()
-        {
-            var productVMs = await (from p in Context.Products
-                                    join c in Context.Categories on p.CategoryID equals c.CategoryID
-                                    join m in Context.Manufacturers on p.ManufacturerID equals m.ManufacturerID
-                                    select new ProductVM
-                                    {
-                                        ProductID = p.ProductID,
-                                        Name = p.Name,
-                                        CategoryName = c.Name,
-                                        ManufacturerName = m.Name,
-                                        Price = p.Price
-                                    }).ToListAsync();
-
-            return productVMs;
-        }
+   
     }
 }

@@ -1,0 +1,88 @@
+﻿@model AudioStore.Models.Product
+
+<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+    <input asp-for="ProductID" hidden />
+    <input asp-for="ImageUrl" hidden />
+    <div class="row">
+        <div class="col-10">
+            <div class="border p-3 mt-4 row">
+                <div class="col-12 pb-2">
+                    <h2 class="text-primary">@(Model.ProductID != 0 ? "Update " : "Create ")Product</h2>
+                </div>
+                @*  <div asp-validation-summary="All"></div> *@
+                <div class="mb-3">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label asp-for="Price"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                    <label asp-for="ImageUrl"></label>
+                    <input type="file" id="uploadBox" name="file" asp-for="ImageUrl" class="form-control" />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="ManufacturerID"></label>
+                    <select asp-for="ManufacturerID" class="form-select" id="ManufacturerDropdown">
+                        <option disabled selected>Select Manufacturer</option>
+                        <!-- Manufacturers will be loaded here  -->
+                    </select>
+                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="CategoryID"></label>
+                    <select asp-for="CategoryID" class="form-select" id="SuperCategoryDropdown">
+                        <option disabled selected>Select Category</option>
+                        <!-- Supercategories will be loaded here -->
+                    </select>
+                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 col-6">
+                    <label>Sub Category</label>
+                    <select id="SubCategoryDropdown" class="form-select">
+                        <option disabled selected>Select Sub Category</option>
+                        <!-- Subcategories will be loaded here based on the selected supercategory -->
+                    </select>
+                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    @if (Model.ProductID != 0)
+                    {
+                        <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary" style="width:150px">Create</button>
+                    }
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-2 pt-4">
+            <img src="@Model.ImageUrl" class="img-fluid"
+                 style="border-radius:5px; border:1px solid #bbb9b9">
+            </img>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script src="~/js/productDropdown.js"></script>
+}

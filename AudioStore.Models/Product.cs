@@ -15,6 +15,7 @@ namespace AudioStore.Models
         public string Description { get; set; }
         [Required]
         public double Price { get; set; }
+        [ValidateNever]
         public string ImageUrl { get; set; }
         [Required]
         [Display(Name = "Category")]

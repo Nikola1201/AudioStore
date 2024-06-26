@@ -18,5 +18,8 @@
     <ProjectReference Include="..\AudioStore.Services.Interfaces\AudioStore.Services.Interfaces.csproj" />
     <ProjectReference Include="..\AudioStore.Services\AudioStore.Services.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
 
 </Project>

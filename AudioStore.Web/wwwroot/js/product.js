@@ -13,8 +13,8 @@ function loadDataTable() {
         },
         "columns": [
             { "data": "name", "width": "20%" },
-            { "data": "categoryName", "width": "20%" },
-            { "data": "manufacturerName", "width": "20%" },
+            { "data": "category.name","defaultContent":"", "width": "20%" },
+            { "data": "manufacturer.name", "defaultContent": "", "width": "20%" },
             { "data": "price", "width": "20%" },
             {
                 "data": "productID",

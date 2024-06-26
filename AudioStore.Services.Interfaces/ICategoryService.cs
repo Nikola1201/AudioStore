@@ -11,6 +11,8 @@ namespace AudioStore.Services.Interfaces
         public Task<Category> UpdateCategory(Category category);
         public Task DeleteCategory(int? id);
         public Task<List<CategoryVM>> GetCategoriesVM();
+        public Task<List<Category>> GetAllSubCategories(int id);
+
 
     }
 }

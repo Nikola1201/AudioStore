@@ -15,6 +15,6 @@ namespace AudioStore.Services.Interfaces
         public Task<Product> GetProductById(int? id);
         public Task<Product> UpdateProduct(Product product);
         public Task DeleteProduct(int? id);
-        public Task<List<ProductVM>> GetProductVMs();
+    
     }
 }
