@@ -7,9 +7,11 @@ namespace AudioStore.Web.Controllers
     public class ManufacturerController : Controller
     {
         public IManufacturerService ManufacturerService { get; }
-        public ManufacturerController(IManufacturerService manufacturerService)
+        private readonly IWebHostEnvironment _webHost;
+        public ManufacturerController(IManufacturerService manufacturerService, IWebHostEnvironment webHost)
         {
             ManufacturerService = manufacturerService;
+            _webHost = webHost;
         }
 
         public IActionResult Index()
@@ -37,11 +39,33 @@ namespace AudioStore.Web.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Manufacturer manufacturer)
+        public IActionResult Upsert(Manufacturer manufacturer,IFormFile file)
         {
             if (ModelState.IsValid)
             { 
-                if(manufacturer.ManufacturerID== 0)
+                string wwwrootPath = _webHost.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(wwwrootPath, @"images\manufacturers");
+                    var extension = Path.GetExtension(file.FileName);
+                    if(manufacturer.ImageUrl != null)
+                    {
+                        //this is an edit and we need to remove old image
+                        var imagePath = Path.Combine(wwwrootPath, manufacturer.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+                    }
+                    using(var fileStream = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    manufacturer.ImageUrl = @"\images\manufacturers\" + fileName + extension;
+                }
+                
+                if (manufacturer.ManufacturerID== 0)
                 {
                     ManufacturerService.CreateManufacturer(manufacturer);
                     TempData["success"] = "Manufacturer created successfully!";

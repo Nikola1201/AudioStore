@@ -8,18 +8,23 @@ namespace AudioStore.Models
     {
         [Key]
         public int CategoryID { get; set; }
+
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
+
         [ValidateNever]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
+
+        [Display(Name = "Super Category")]
+        [ValidateNever]
         public int? SuperCategoryID { get; set; }
+
         [ForeignKey("SuperCategoryID")]
         [ValidateNever]
-        public virtual Category SuperCategory { get; set; }
-        [ValidateNever]
+        public virtual Category? SuperCategory { get; set; }
 
-        public virtual ICollection<Category> SubCategories { get; set; }
-       
+        [ValidateNever]
+        public virtual ICollection<Category>? SubCategories { get; set; } = new List<Category>();
     }
 }

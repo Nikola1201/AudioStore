@@ -22,6 +22,8 @@
     <Folder Include="Views\CategoryCustomer\" />
     <Folder Include="Views\ManufacturerCustomer\" />
     <Folder Include="Views\ProductCustomer\" />
+    <Folder Include="wwwroot\images\categories\" />
+    <Folder Include="wwwroot\images\manufacturers\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
