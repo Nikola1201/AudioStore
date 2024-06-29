@@ -92,21 +92,21 @@ namespace AudioStore.Web.Controllers
 
         #region API CALLS
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var categories = CategoryService.GetCategoriesVM().Result;
+            var categories = await CategoryService.GetCategoriesVM();
             return Json(new { data = categories });
         }
 
         [HttpDelete]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
-            var obj = CategoryService.GetCategoryById(id).Result;
+            var obj = await CategoryService.GetCategoryById(id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
             }
-            CategoryService.DeleteCategory(id);
+            await CategoryService.DeleteCategory(id);
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

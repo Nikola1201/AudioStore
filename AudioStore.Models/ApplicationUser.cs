@@ -10,14 +10,13 @@ namespace AudioStore.Models
 {
     public class ApplicationUser
     {
-        [Required]
-        [MaxLength(100)]
+        public int ApplicationUserID { get; set; }
         public string Name { get; set; }
-        [MaxLength(100)]
+        public string Email { get; set; }
         public string? StreetAddress { get; set; }
-        [MaxLength(100)]
+
         public string? City { get; set; }
-        [Range(10000, 99999)]
+
         public int PostalCode { get; set; }
 
     }

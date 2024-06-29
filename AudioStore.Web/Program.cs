@@ -1,4 +1,5 @@
 using AudioStore.DataAccess;
+using AudioStore.Models.ViewModels;
 using AudioStore.Services;
 using AudioStore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ namespace AudioStore.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var cart = new List<ShoppingCartVM>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -24,7 +27,7 @@ namespace AudioStore.Web
             builder.Services.AddTransient<ICategoryService, CategoryServices>();
             builder.Services.AddTransient<IManufacturerService, ManufacturerServices>();
             builder.Services.AddTransient<IProductService, ProductServices>();
-
+            builder.Services.AddSingleton(cart);
 
 
             var app = builder.Build();

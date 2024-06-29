@@ -120,9 +120,9 @@ namespace AudioStore.Web.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
-            var obj = ProductService.GetProductById(id).Result;
+            var obj = await ProductService.GetProductById(id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
@@ -132,7 +132,7 @@ namespace AudioStore.Web.Controllers
             {
                 System.IO.File.Delete(odlImagePath);
             }
-            ProductService.DeleteProduct(id);
+            await ProductService.DeleteProduct(id);
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion
