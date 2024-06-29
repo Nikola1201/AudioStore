@@ -12,7 +12,7 @@ namespace AudioStore.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var cart = new List<ShoppingCartVM>();
+        
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -23,14 +23,29 @@ namespace AudioStore.Web
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
+            // Add HttpContextAccessor used for cookies in ShoppingCartService
+            builder.Services.AddHttpContextAccessor();
+
+
+
             // Add services dependency injection
-            builder.Services.AddTransient<ICategoryService, CategoryServices>();
-            builder.Services.AddTransient<IManufacturerService, ManufacturerServices>();
-            builder.Services.AddTransient<IProductService, ProductServices>();
-            builder.Services.AddSingleton(cart);
+            builder.Services.AddScoped<ICategoryService, CategoryServices>();
+            builder.Services.AddScoped<IManufacturerService, ManufacturerServices>();
+            builder.Services.AddScoped<IProductService, ProductServices>();
+            builder.Services.AddScoped<ShoppingCartService>();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
 
 
             var app = builder.Build();
+            app.UseSession();
+
 
             app.Use(async (context, next) =>
             {
@@ -53,6 +68,7 @@ namespace AudioStore.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

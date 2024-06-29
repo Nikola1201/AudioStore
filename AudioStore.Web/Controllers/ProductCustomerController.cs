@@ -8,11 +8,12 @@ namespace AudioStore.Web.Controllers
     public class ProductCustomerController : Controller
     {
         private IProductService ProductService { get; }
-        private List<ShoppingCartVM> Cart { get; } = new List<ShoppingCartVM>();
-        public ProductCustomerController(IProductService productService, List<ShoppingCartVM> cart)
+        private readonly ShoppingCartService _shoppingCartService;
+        public ProductCustomerController(IProductService productService, ShoppingCartService shoppingCartService)
         {
             ProductService = productService;
-            Cart = cart;
+            _shoppingCartService = shoppingCartService;
+
         }
         public async Task<IActionResult> IndexAsync()
         {
@@ -35,17 +36,21 @@ namespace AudioStore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DetailsAsync(ShoppingCartVM obj)
         {
-            foreach (var c in Cart)
-            {
-                if (obj.Id == c.Id)
-                {
-                    c.Count += obj.Count;
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            obj.Product = await ProductService.GetProductById(obj.ProductID);
+            var cartId = _shoppingCartService.GetOrCreateCartId();
+            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCartVM>();
 
-            Cart.Add(obj);
+            foreach (var c in cart)
+                {
+                    if (obj.Id == c.Id)
+                    {
+                        c.Count += obj.Count;
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+           
+            obj.Product = await ProductService.GetProductById(obj.ProductID);
+            obj.Price = obj.Product.Price;
+            _shoppingCartService.AddToCart(obj);
 
             return RedirectToAction(nameof(Index));
 

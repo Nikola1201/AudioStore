@@ -48,7 +48,9 @@ namespace AudioStore.Services
 
         public Task<Product> GetProductById(int? id)
         {
-            return Context.Products.FirstOrDefaultAsync(x => x.ProductID == id);
+          IQueryable<Product> query = Context.Products;
+            query = query.Include(p => p.Category).Include(p => p.Manufacturer);
+            return query.FirstOrDefaultAsync(p => p.ProductID == id);
         }
 
         public async Task<Product> UpdateProduct(Product product)

@@ -18,7 +18,6 @@ namespace AudioStore.Models.ViewModels
         public Product Product { get; set; }
         [Range(1, 1000, ErrorMessage = "Please enter a value betweem 1 and 1000")]
         public int Count { get; set; }
-        [NotMapped]
         public double Price { get; set; }
         public double Total { get=> Count * Price; }
     }
