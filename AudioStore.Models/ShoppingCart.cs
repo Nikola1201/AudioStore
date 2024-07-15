@@ -7,18 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AudioStore.Models.ViewModels
+namespace AudioStore.Models
 {
-    public class ShoppingCartVM
+    public class ShoppingCart
     {
+        [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ProductID { get; set; }
         [ForeignKey("ProductID")]
         [ValidateNever]
         public Product Product { get; set; }
+        public int OrderDetailsID { get; set; }
+        public OrderDetails OrderDetails { get; set; }
         [Range(1, 1000, ErrorMessage = "Please enter a value betweem 1 and 1000")]
         public int Count { get; set; }
         public double Price { get; set; }
-        public double Total { get=> Count * Price; }
+        public double Total { get=> this.Count * this.Price; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using AudioStore.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,7 @@ namespace AudioStore.Models
     public class OrderDetails
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderID { get; set; }
         public int ApplicationUserID { get; set; }
         [ForeignKey("ApplicationUserID")]
@@ -19,12 +21,6 @@ namespace AudioStore.Models
         public ApplicationUser ApplicationUser { get; set; }
         public DateTime OrderDate { get; set; }
         [Required]
-        public int ProductID { get; set; }
-        [ForeignKey("ProductID")]
-        [ValidateNever]
-        public Product Product { get; set; }
-        public int Count { get; set; }
-        public double Price { get; set; }
-
+        public ICollection<ShoppingCart> Carts { get; set; } = new List<ShoppingCart>();
     }
 }

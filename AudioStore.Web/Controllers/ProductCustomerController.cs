@@ -1,5 +1,5 @@
 ﻿using AudioStore.Models;
-using AudioStore.Models.ViewModels;
+
 using AudioStore.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace AudioStore.Web.Controllers
         //GET
         public async Task<IActionResult> Details(int id)
         {
-            ShoppingCartVM obj = new ShoppingCartVM()
+            ShoppingCart obj = new ShoppingCart()
             {
                 Count = 1,
                 Product = await ProductService.GetProductById(id),
@@ -34,10 +34,10 @@ namespace AudioStore.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DetailsAsync(ShoppingCartVM obj)
+        public async Task<IActionResult> DetailsAsync(ShoppingCart obj)
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
-            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCartVM>();
+            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCart>();
 
             foreach (var c in cart)
                 {

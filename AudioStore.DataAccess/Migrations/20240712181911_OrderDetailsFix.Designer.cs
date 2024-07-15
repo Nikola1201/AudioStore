@@ -4,6 +4,7 @@ using AudioStore.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AudioStore.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240712181911_OrderDetailsFix")]
+    partial class OrderDetailsFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,7 +183,7 @@ namespace AudioStore.DataAccess.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderDetailsID")
+                    b.Property<int?>("OrderDetailsOrderID")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -191,7 +194,7 @@ namespace AudioStore.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderDetailsID");
+                    b.HasIndex("OrderDetailsOrderID");
 
                     b.HasIndex("ProductID");
 
@@ -239,19 +242,15 @@ namespace AudioStore.DataAccess.Migrations
 
             modelBuilder.Entity("AudioStore.Models.ShoppingCart", b =>
                 {
-                    b.HasOne("AudioStore.Models.OrderDetails", "OrderDetails")
+                    b.HasOne("AudioStore.Models.OrderDetails", null)
                         .WithMany("Carts")
-                        .HasForeignKey("OrderDetailsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderDetailsOrderID");
 
                     b.HasOne("AudioStore.Models.Product", "Product")
-                        .WithMany("ShoppingCartItems")
+                        .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("OrderDetails");
 
                     b.Navigation("Product");
                 });
@@ -264,11 +263,6 @@ namespace AudioStore.DataAccess.Migrations
             modelBuilder.Entity("AudioStore.Models.OrderDetails", b =>
                 {
                     b.Navigation("Carts");
-                });
-
-            modelBuilder.Entity("AudioStore.Models.Product", b =>
-                {
-                    b.Navigation("ShoppingCartItems");
                 });
 #pragma warning restore 612, 618
         }

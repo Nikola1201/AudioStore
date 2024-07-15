@@ -1,4 +1,48 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<AudioStore.Models.Product>
+<div class="hero-section">
+    <div class="image-holder">
+        <img src="~/images/homepage/homepage-hero.jpg" alt="" />
+    </div>
+    <div class="hero-section-content">
+        <h1>
+            AUDIO STORE
+        </h1>
+    </div>
+</div>
 
+
+<div class="under-hero-section">
+    <h2>About us</h2>
+    <p>We are a company specialized in selling high-quality audio equipment. With extensive experience in the industry, we offer a wide range of products, including headphones, speakers, and amplifiers from top brands. Our expert team is dedicated to providing exceptional customer support to help you find the perfect equipment to meet your needs. Thank you for choosing us as your partner in sound!</p>
+</div>
+
+<div class="row pb-3 card_block">    
+    @foreach (var product in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12 p-1">
+                    <div class="card">
+                        <img src="@product.ImageUrl" class="card-img-top" />
+                        <div class="card-body">
+                            <div class="pl-1">
+                                <p class="card-title-h5 text-primary">@product.Name</p>
+                            </div>
+                            <div class="pl-1">
+                                <p class="card-title text-info">by <b>@product.Manufacturer.Name</b></p>
+                            </div>
+                            <div class="pl-1">
+                                <p>List Price:<b>$@product.Price.ToString("0.00")</b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a asp-action="Details" class="btn btn-primary form-control" asp-route-id=@product.ProductID>
+                            Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

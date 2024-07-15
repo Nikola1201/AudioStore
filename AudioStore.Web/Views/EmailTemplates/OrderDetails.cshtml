@@ -1,0 +1,27 @@
+﻿@model AudioStore.Models.OrderDetails
+
+<h2>Order Confirmation</h2>
+<p>Dear @Model.ApplicationUser.Name,</p>
+<p>Thank you for your order. Here are the details:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Carts)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Count</td>
+                <td>@item.Price</td>
+                <td>@item.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -7,6 +7,8 @@ namespace AudioStore.Models
     public class Product
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int ProductID { get; set; }
         [Required]
         [MaxLength(100)]
@@ -29,6 +31,7 @@ namespace AudioStore.Models
         [ForeignKey("ManufacturerID")]
         [ValidateNever]
         public Manufacturer Manufacturer { get; set; }
+        public ICollection<ShoppingCart> ShoppingCartItems { get; set; } = new List<ShoppingCart>();
 
     }
 }

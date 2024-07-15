@@ -33,6 +33,9 @@ namespace AudioStore.Web
             builder.Services.AddScoped<ICategoryService, CategoryServices>();
             builder.Services.AddScoped<IManufacturerService, ManufacturerServices>();
             builder.Services.AddScoped<IProductService, ProductServices>();
+            builder.Services.AddScoped<IOrderDetailsService, OrderDetailsService>();
+            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            builder.Services.AddScoped<CartService>();
             builder.Services.AddScoped<ShoppingCartService>();
             builder.Services.AddSession(options =>
             {
@@ -40,8 +43,6 @@ namespace AudioStore.Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
-
 
             var app = builder.Build();
             app.UseSession();

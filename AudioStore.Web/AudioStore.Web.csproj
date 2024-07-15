@@ -6,12 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Mailjet.Api" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="WessleyMitchell.Web.DotNetCore.ViewRenderer" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioStore.DataAccess\AudioStore.DataAccess.csproj" />
@@ -20,8 +22,6 @@
     <ProjectReference Include="..\AudioStore.Services\AudioStore.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\CategoryCustomer\" />
-    <Folder Include="Views\ManufacturerCustomer\" />
     <Folder Include="wwwroot\images\categories\" />
     <Folder Include="wwwroot\images\manufacturers\" />
     <Folder Include="wwwroot\images\products\" />
