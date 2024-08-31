@@ -24,7 +24,7 @@ namespace AudioStore.Web.Controllers
         //GET
         public async Task<IActionResult> Details(int id)
         {
-            ShoppingCart obj = new ShoppingCart()
+            ShoppingCartItem obj = new ShoppingCartItem()
             {
                 Count = 1,
                 Product = await ProductService.GetProductById(id),
@@ -34,10 +34,10 @@ namespace AudioStore.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DetailsAsync(ShoppingCart obj)
+        public async Task<IActionResult> DetailsAsync(ShoppingCartItem obj)
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
-            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCart>();
+            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCartItem>();
 
             foreach (var c in cart)
                 {

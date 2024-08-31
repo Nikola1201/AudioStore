@@ -7,12 +7,12 @@ namespace AudioStore.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        public ICategoryService CategoryService { get; }
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHost;
 
-        public CategoryController(ICategoryService categoryService, IWebHostEnvironment webHost)
+        public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment webHost)
         {
-            CategoryService = categoryService;
+            _unitOfWork = unitOfWork;
             _webHost = webHost;
 
         }
@@ -33,7 +33,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                category = await CategoryService.GetCategoryById(id);
+                category = await _unitOfWork.Category.GetCategoryById(id);
                 if (category == null)
                 {
                     return NotFound();
@@ -49,7 +49,7 @@ namespace AudioStore.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var obj = await CategoryService.GetCategoryById(category.SuperCategoryID);
+                var obj = await _unitOfWork.Category.GetCategoryById(category.SuperCategoryID);
                 if (obj != null)
                 {
                     category.SuperCategory = obj;
@@ -62,7 +62,7 @@ namespace AudioStore.Web.Controllers
                     var extension = Path.GetExtension(file.FileName);
                     if (category.ImageUrl != null)
                     {
-                        //this is an edit and we need to remove old image
+                        // This is an edit and we need to remove old image
                         var imagePath = Path.Combine(wwwRootPath, category.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(imagePath))
                         {
@@ -77,16 +77,18 @@ namespace AudioStore.Web.Controllers
                 }
                 if (category.CategoryID == 0)
                 {
-                    CategoryService.CreateCategory(category);
+                    _unitOfWork.Category.CreateCategory(category);
                     TempData["success"] = "Category created successfully!";
+
                 }
                 else
                 {
-                    CategoryService.UpdateCategory(category);
+                    _unitOfWork.Category.UpdateCategory(category);
                     TempData["success"] = "Category updated successfully!";
                 }
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
+            TempData["error"] = "Error updating category";
             return View(category);
         }
 
@@ -94,19 +96,19 @@ namespace AudioStore.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var categories = await CategoryService.GetCategoriesVM();
+            var categories = await _unitOfWork.Category.GetCategoriesVM();
             return Json(new { data = categories });
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int? id)
         {
-            var obj = await CategoryService.GetCategoryById(id);
+            var obj = await _unitOfWork.Category.GetCategoryById(id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
             }
-            await CategoryService.DeleteCategory(id);
+            await _unitOfWork.Category.DeleteCategory(id);
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

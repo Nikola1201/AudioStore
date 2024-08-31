@@ -9,16 +9,12 @@ namespace AudioStore.Web.Controllers
 {
     public class ProductController : Controller
     {
-        private IProductService ProductService { get; }
-        private ICategoryService CategoryServices { get; }
-        private IManufacturerService ManufacturerService { get; }
+        private readonly IUnitOfWork _unitOfWork;
 
         private readonly IWebHostEnvironment _webHost;
-        public ProductController(IProductService productService, ICategoryService categoryService, IManufacturerService manufacturerService, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
-            ProductService = productService;
-            CategoryServices = categoryService;
-            ManufacturerService = manufacturerService;
+            _unitOfWork = unitOfWork;
             _webHost = webHostEnvironment;
         }
         public IActionResult Index()
@@ -37,7 +33,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                product = ProductService.GetProductById(id).Result;
+                product = _unitOfWork.Product.GetProductById(id).Result;
                 if (product == null)
                 {
                     return NotFound();
@@ -76,18 +72,21 @@ namespace AudioStore.Web.Controllers
                 }
                 if (obj.ProductID == 0)
                 {
-                    ProductService.CreateProduct(obj);
+                    _unitOfWork.Product.CreateProduct(obj);
                     TempData["success"] = "Product created successfully!";
                 }
                 else
                 {
-                    ProductService.UpdateProduct(obj);
+                    _unitOfWork.Product.UpdateProduct(obj);
                     TempData["success"] = "Product updated successfully!";
                 }
 
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
 
             }
+
+            TempData["error"] = "Error updating product";
+
             return View(obj);
         }
 
@@ -96,33 +95,33 @@ namespace AudioStore.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<Product> products = await ProductService.GetAllProducts();
+            IEnumerable<Product> products = await _unitOfWork.Product.GetAllProducts();
             return Json(new { data = products });
         }
 
         [HttpGet]
         public async Task<IActionResult> GetSubCategories(int superCategoryId)
         {
-            var subCategories = await CategoryServices.GetAllSubCategories(superCategoryId);
+            var subCategories = await _unitOfWork.Category.GetAllSubCategories(superCategoryId);
             return Json(new { data = subCategories });
         }
         [HttpGet]
         public async Task<IActionResult> GetManufacturers()
         {
-            var manufacturers = await ManufacturerService.GetAllManufacturers();
+            var manufacturers = await _unitOfWork.Manufacturer.GetAllManufacturers();
             return Json(new { data = manufacturers });
         }
         [HttpGet]
         public async Task<IActionResult> GetSuperCategories()
         {
-            var superCategories = await CategoryServices.GetAllSuperCategories();
+            var superCategories = await _unitOfWork.Category.GetAllSuperCategories();
             return Json(new { data = superCategories });
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int? id)
         {
-            var obj = await ProductService.GetProductById(id);
+            var obj = await _unitOfWork.Product.GetProductById(id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
@@ -132,7 +131,7 @@ namespace AudioStore.Web.Controllers
             {
                 System.IO.File.Delete(odlImagePath);
             }
-            await ProductService.DeleteProduct(id);
+            await _unitOfWork.Product.DeleteProduct(id);
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

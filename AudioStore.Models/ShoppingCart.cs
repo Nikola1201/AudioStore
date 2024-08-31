@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AudioStore.Models
 {
-    public class ShoppingCart
+    public class ShoppingCartItem
     {
         [Required]
         [Key]

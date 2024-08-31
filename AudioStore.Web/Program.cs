@@ -30,11 +30,7 @@ namespace AudioStore.Web
 
 
             // Add services dependency injection
-            builder.Services.AddScoped<ICategoryService, CategoryServices>();
-            builder.Services.AddScoped<IManufacturerService, ManufacturerServices>();
-            builder.Services.AddScoped<IProductService, ProductServices>();
-            builder.Services.AddScoped<IOrderDetailsService, OrderDetailsService>();
-            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<CartService>();
             builder.Services.AddScoped<ShoppingCartService>();
             builder.Services.AddSession(options =>
@@ -43,6 +39,7 @@ namespace AudioStore.Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+     
 
             var app = builder.Build();
             app.UseSession();
@@ -75,12 +72,13 @@ namespace AudioStore.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+       
 
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

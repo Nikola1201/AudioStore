@@ -34,21 +34,21 @@ public class ShoppingCartService
         return cartId;
     }
 
-    public void AddToCart(ShoppingCart item)
+    public void AddToCart(ShoppingCartItem item)
     {
         var cartId = GetOrCreateCartId();
-        var cart = GetCart(cartId) ?? new List<ShoppingCart>();
+        var cart = GetCart(cartId) ?? new List<ShoppingCartItem>();
         cart.Add(item);
         SetCart(cartId, cart);
     }
 
-    public List<ShoppingCart>? GetCart(string cartId)
+    public List<ShoppingCartItem>? GetCart(string cartId)
     {
         var cartCookie = _httpContextAccessor.HttpContext.Request.Cookies[$"Cart_{cartId}"];
-        return cartCookie != null ? JsonConvert.DeserializeObject<List<ShoppingCart>>(cartCookie) : new List<ShoppingCart>();
+        return cartCookie != null ? JsonConvert.DeserializeObject<List<ShoppingCartItem>>(cartCookie) : new List<ShoppingCartItem>();
     }
 
-    public void SetCart(string cartId, List<ShoppingCart> cart)
+    public void SetCart(string cartId, List<ShoppingCartItem> cart)
     {
         var options = new CookieOptions
         {

@@ -10,40 +10,40 @@ namespace AudioStore.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IProductService ProductService { get; }
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ShoppingCartService _shoppingCartService;
 
 
-        public HomeController(ILogger<HomeController> logger, IProductService productService, ShoppingCartService shoppingCartService)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, ShoppingCartService shoppingCartService)
         {
             _logger = logger;
-            ProductService = productService;
+            _unitOfWork = unitOfWork;
             _shoppingCartService = shoppingCartService;
         }
      
         public async Task<IActionResult> IndexAsync()
         {
-            IEnumerable<Product> products = await ProductService.GetAllProducts();
+            IEnumerable<Product> products = await _unitOfWork.Product.GetAllProducts();
             return View(products);
         }
 
         //GET
         public async Task<IActionResult> Details(int id)
         {
-            ShoppingCart obj = new ShoppingCart()
+            ShoppingCartItem obj = new ShoppingCartItem()
             {
                 Count = 1,
-                Product = await ProductService.GetProductById(id),
+                Product = await _unitOfWork.Product.GetProductById(id),
                 ProductID = id
             };
             return View(obj);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DetailsAsync(ShoppingCart obj)
+        public async Task<IActionResult> DetailsAsync(ShoppingCartItem obj)
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
-            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCart>();
+            var cart = _shoppingCartService.GetCart(cartId) ?? new List<ShoppingCartItem>();
 
             foreach (var c in cart)
             {
@@ -54,7 +54,7 @@ namespace AudioStore.Web.Controllers
                 }
             }
 
-            obj.Product = await ProductService.GetProductById(obj.ProductID);
+            obj.Product = await _unitOfWork.Product.GetProductById(obj.ProductID);
             obj.Price = obj.Product.Price;
             _shoppingCartService.AddToCart(obj);
 

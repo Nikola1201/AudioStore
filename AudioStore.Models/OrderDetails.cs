@@ -21,6 +21,6 @@ namespace AudioStore.Models
         public ApplicationUser ApplicationUser { get; set; }
         public DateTime OrderDate { get; set; }
         [Required]
-        public ICollection<ShoppingCart> Carts { get; set; } = new List<ShoppingCart>();
+        public ICollection<ShoppingCartItem> Carts { get; set; } = new List<ShoppingCartItem>();
     }
 }

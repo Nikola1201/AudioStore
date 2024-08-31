@@ -1,6 +1,13 @@
-﻿@model IEnumerable<AudioStore.Models.ShoppingCart>
+﻿@model IEnumerable<AudioStore.Models.ShoppingCartItem>
 
 <div class="container mt-3">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            Shopping Cart is empty.
+        </div>
+        <a asp-action="Index"asp-controller="Home" class="btn btn-primary">Continue Shopping</a>
+    }else{
     <div class="row">
         <div class="col-6 pt-2">
             <h2>Shopping Cart</h2>
@@ -51,5 +58,7 @@
     <div class="text-end mt-3">
         <a asp-action="Checkout" class="btn btn-success">Place Order</a>
     </div>
+    }
 </div>
+
 

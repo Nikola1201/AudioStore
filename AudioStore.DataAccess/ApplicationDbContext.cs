@@ -1,10 +1,10 @@
 ﻿using AudioStore.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 namespace AudioStore.DataAccess
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext:IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)        {
             
@@ -13,17 +13,17 @@ namespace AudioStore.DataAccess
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ShoppingCart>()
+            modelBuilder.Entity<ShoppingCartItem>()
             .HasOne(s => s.OrderDetails)
             .WithMany(o => o.Carts)
             .HasForeignKey(s => s.OrderDetailsID);
 
-            modelBuilder.Entity<ShoppingCart>()
+            modelBuilder.Entity<ShoppingCartItem>()
                 .HasOne(s => s.Product)
                 .WithMany(p => p.ShoppingCartItems)
                 .HasForeignKey(s => s.ProductID);

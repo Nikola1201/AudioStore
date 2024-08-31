@@ -19,7 +19,7 @@ namespace AudioStore.Web.Controllers
         private CartService CartService { get; set; }
         private IOrderDetailsService OrderDetailsService { get; }
 
-        public ShoppingCartController(ShoppingCartService shoppingCartService,IOrderDetailsService orderDetailsService, IApplicationUserService userService, CartService cartService)
+        public ShoppingCartController(ShoppingCartService shoppingCartService, IOrderDetailsService orderDetailsService, IApplicationUserService userService, CartService cartService)
         {
             _userService = userService;
             OrderDetailsService = orderDetailsService;
@@ -50,7 +50,7 @@ namespace AudioStore.Web.Controllers
                 _shoppingCartService.SetCart(cartId, cart);
             }
             return RedirectToAction(nameof(Index));
-        
+
         }
         public IActionResult Plus(int id)
         {
@@ -71,7 +71,7 @@ namespace AudioStore.Web.Controllers
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
-            Tuple<ApplicationUser, IEnumerable<ShoppingCart>> tuple = new Tuple<ApplicationUser, IEnumerable<ShoppingCart>>(new ApplicationUser(), cart);
+            Tuple<ApplicationUser, IEnumerable<ShoppingCartItem>> tuple = new Tuple<ApplicationUser, IEnumerable<ShoppingCartItem>>(new ApplicationUser(), cart);
             return View(tuple);
         }
 
@@ -89,7 +89,7 @@ namespace AudioStore.Web.Controllers
             var cart = _shoppingCartService.GetCart(cartId);
 
             await _userService.CreateUser(user);
-            int id =await _userService.GetApplicationUserId();
+            int id = await _userService.GetApplicationUserId();
             OrderDetails orderDetails = new OrderDetails()
             {
                 ApplicationUser = user,
@@ -97,18 +97,18 @@ namespace AudioStore.Web.Controllers
                 OrderDate = DateTime.Now,
                 ApplicationUserID = id
             };
-            foreach(var c in cart)
+            foreach (var c in cart)
             {
                 c.Id = 0;
             }
-          
-            await OrderDetailsService.CreateOrderDetails(orderDetails);
-           // SendOrderEmailAsync(orderDetails);
-           
 
-            _shoppingCartService.SetCart(cartId.ToString(), new List<ShoppingCart>());
+            await OrderDetailsService.CreateOrderDetails(orderDetails);
+            SendOrderEmailAsync(orderDetails);
+
+
+            _shoppingCartService.SetCart(cartId.ToString(), new List<ShoppingCartItem>());
             return RedirectToAction("OrderConfirmation");
-        } 
+        }
 
         public IActionResult OrderConfirmation()
         {
@@ -129,7 +129,7 @@ namespace AudioStore.Web.Controllers
                 mail.From = new MailAddress(senderEmail);
                 mail.To.Add(orderDetails.ApplicationUser.Email);
                 mail.Subject = "Order Details";
-                mail.Body=body;
+                mail.Body = body;
                 mail.IsBodyHtml = true;
 
                 SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);
@@ -137,7 +137,7 @@ namespace AudioStore.Web.Controllers
                 smtpClient.EnableSsl = true;
                 await smtpClient.SendMailAsync(mail);
                 Console.WriteLine("Order email sent successfully.");
-              
+
             }
             catch (Exception ex)
             {

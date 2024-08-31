@@ -16,7 +16,7 @@ namespace AudioStore.Services
         {
             _context = context;
         }
-        public async Task  CreateCart(ShoppingCart cart)
+        public async Task  CreateCart(ShoppingCartItem cart)
         {
           
             _context.Entry(cart.Product).State = EntityState.Unchanged;
