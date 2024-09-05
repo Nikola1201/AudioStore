@@ -1,10 +1,12 @@
 ﻿using AudioStore.Models;
-using AudioStore.Models.ViewModels;
 using AudioStore.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace AudioStore.Web.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,8 +20,6 @@ namespace AudioStore.Web.Controllers
         }
         public IActionResult Index()
         {
-
-
             return View();
         }
 
@@ -33,11 +33,12 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                category = await _unitOfWork.Category.GetCategoryById(id);
-                if (category == null)
+                var categoryFromDb = await _unitOfWork.Category.GetSingleOrDefaultAsync(c => c.CategoryID == id);
+                if (categoryFromDb == null)
                 {
                     return NotFound();
                 }
+                category = categoryFromDb;
                 return View(category);
             }
         }
@@ -49,7 +50,7 @@ namespace AudioStore.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var obj = await _unitOfWork.Category.GetCategoryById(category.SuperCategoryID);
+                var obj = await _unitOfWork.Category.GetSingleOrDefaultAsync(c => c.CategoryID == category.SuperCategoryID);
                 if (obj != null)
                 {
                     category.SuperCategory = obj;
@@ -77,7 +78,8 @@ namespace AudioStore.Web.Controllers
                 }
                 if (category.CategoryID == 0)
                 {
-                    _unitOfWork.Category.CreateCategory(category);
+                   await _unitOfWork.Category.AddAsync(category);
+                    _unitOfWork.Save();
                     TempData["success"] = "Category created successfully!";
 
                 }
@@ -103,12 +105,13 @@ namespace AudioStore.Web.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int? id)
         {
-            var obj = await _unitOfWork.Category.GetCategoryById(id);
+            var obj = await _unitOfWork.Category.GetSingleOrDefaultAsync(c => c.CategoryID == id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
             }
-            await _unitOfWork.Category.DeleteCategory(id);
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

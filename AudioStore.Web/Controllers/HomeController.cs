@@ -23,7 +23,7 @@ namespace AudioStore.Web.Controllers
      
         public async Task<IActionResult> IndexAsync()
         {
-            IEnumerable<Product> products = await _unitOfWork.Product.GetAllProducts();
+            IEnumerable<Product> products = await _unitOfWork.Product.GetAllAsync(includeProperties: "Manufacturer,Category");
             return View(products);
         }
 
@@ -33,7 +33,7 @@ namespace AudioStore.Web.Controllers
             ShoppingCartItem obj = new ShoppingCartItem()
             {
                 Count = 1,
-                Product = await _unitOfWork.Product.GetProductById(id),
+                Product = await _unitOfWork.Product.GetSingleOrDefaultAsync(p=>p.ProductID== id,includeProperties:"Manufacturer,Category"),
                 ProductID = id
             };
             return View(obj);
@@ -54,10 +54,10 @@ namespace AudioStore.Web.Controllers
                 }
             }
 
-            obj.Product = await _unitOfWork.Product.GetProductById(obj.ProductID);
+            obj.Product = await _unitOfWork.Product.GetSingleOrDefaultAsync(p => p.ProductID == obj.ProductID, includeProperties: "Manufacturer,Category");
             obj.Price = obj.Product.Price;
             _shoppingCartService.AddToCart(obj);
-
+           
             return RedirectToAction(nameof(Index));
 
         }

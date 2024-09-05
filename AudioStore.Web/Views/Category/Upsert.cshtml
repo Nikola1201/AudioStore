@@ -1,4 +1,7 @@
-﻿@model AudioStore.Models.Category
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AudioStore.Models.Category
 
 <form method="post" asp-action="Upsert" enctype="multipart/form-data">
     <input asp-for="CategoryID" hidden />
@@ -31,38 +34,12 @@
             <a asp-controller="Category" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
         </div>
         <div class="col-2 pt-4">
-            <img src="@Model.ImageUrl" class="img-fluid"
-                 style="border-radius:5px; border:1px solid #bbb9b9">
-            </img>
+            <img src="@Model.ImageUrl" class="img-fluid" style="border-radius:5px; border:1px solid #bbb9b9" />
         </div>
     </div>
 </form>
-@if (TempData["success"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        console.log("success");
-        toastr.success('@TempData["success"]');
 
-
-    </script>
-}
-@if (TempData["error"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        console.log("ERROR");
-        toastr.error('@TempData["error"]');
-
-    </script>
-}
 @section Scripts {
-    @{
-        <partial name="_ValidationScriptsPartial" />
-
-    }
+    <partial name="_ValidationScriptsPartial" />
     <script src="~/js/categoryDropdown.js"></script>
-
 }

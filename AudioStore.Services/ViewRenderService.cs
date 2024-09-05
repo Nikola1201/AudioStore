@@ -1,22 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+
 
 public class ViewRenderService
 {
     private readonly IRazorViewEngine _viewEngine;
-    private readonly Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider _tempDataProvider;
+    private readonly ITempDataProvider _tempDataProvider;
     private readonly IServiceProvider _serviceProvider;
 
-    public ViewRenderService(IRazorViewEngine viewEngine, Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider tempDataProvider, IServiceProvider serviceProvider)
+    public ViewRenderService(IRazorViewEngine viewEngine,ITempDataProvider tempDataProvider, IServiceProvider serviceProvider)
     {
         _viewEngine = viewEngine;
         _tempDataProvider = tempDataProvider;
@@ -37,7 +32,7 @@ public class ViewRenderService
                 throw new ArgumentNullException($"{viewName} does not match any available view");
             }
 
-            var viewDictionary = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<TModel>(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
+            var viewDictionary = new ViewDataDictionary<TModel>(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
             {
                 Model = model
             };
@@ -46,7 +41,7 @@ public class ViewRenderService
                 actionContext,
                 viewResult.View,
                 viewDictionary,
-                new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
+                new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
                 sw,
                 new HtmlHelperOptions()
             );

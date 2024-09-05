@@ -15,10 +15,10 @@ namespace AudioStore.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderID { get; set; }
-        public int ApplicationUserID { get; set; }
+        public int CustomerID { get; set; }
         [ForeignKey("ApplicationUserID")]
         [ValidateNever]
-        public ApplicationUser ApplicationUser { get; set; }
+        public Customer Customer { get; set; }
         public DateTime OrderDate { get; set; }
         [Required]
         public ICollection<ShoppingCartItem> Carts { get; set; } = new List<ShoppingCartItem>();

@@ -31,6 +31,7 @@ namespace AudioStore.Models
         [ForeignKey("ManufacturerID")]
         [ValidateNever]
         public Manufacturer Manufacturer { get; set; }
+        public int StockQuantity { get; set; }
         public ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
 
     }

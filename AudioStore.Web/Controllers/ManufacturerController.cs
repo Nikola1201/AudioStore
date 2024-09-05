@@ -1,9 +1,12 @@
 ﻿using AudioStore.Models;
 using AudioStore.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace AudioStore.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ManufacturerController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -28,7 +31,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                manufacturer = _unitOfWork.Manufacturer.GetManufacturerById(id).Result;
+                manufacturer = _unitOfWork.Manufacturer.GetSingleOrDefaultAsync(m => m.ManufacturerID == id).Result;
                 if (manufacturer == null)
                 {
                     return NotFound();
@@ -67,7 +70,8 @@ namespace AudioStore.Web.Controllers
 
                 if (manufacturer.ManufacturerID == 0)
                 {
-                    _unitOfWork.Manufacturer.CreateManufacturer(manufacturer);
+                    _unitOfWork.Manufacturer.AddAsync(manufacturer);
+                    _unitOfWork.Save();
                     TempData["success"] = "Manufacturer created successfully!";
                 }
                 else
@@ -86,19 +90,20 @@ namespace AudioStore.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var manufacturers = await _unitOfWork.Manufacturer.GetAllManufacturers();
+            var manufacturers = await _unitOfWork.Manufacturer.GetAllAsync();
             return Json(new { data = manufacturers });
         }
 
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            var obj = _unitOfWork.Manufacturer.GetManufacturerById(id).Result;
+            var obj = _unitOfWork.Manufacturer.GetSingleOrDefaultAsync(m => m.ManufacturerID == id).Result;
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
             }
-            _unitOfWork.Manufacturer.DeleteManufacturer(id);
+            _unitOfWork.Manufacturer.Remove(obj);
+            _unitOfWork.Save();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

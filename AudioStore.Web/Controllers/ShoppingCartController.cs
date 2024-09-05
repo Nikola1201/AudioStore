@@ -3,6 +3,7 @@ using AudioStore.Models.ViewModels;
 using AudioStore.Services;
 using AudioStore.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -15,16 +16,15 @@ namespace AudioStore.Web.Controllers
     public class ShoppingCartController : Controller
     {
         private readonly ShoppingCartService _shoppingCartService;
-        private IApplicationUserService _userService;
-        private CartService CartService { get; set; }
-        private IOrderDetailsService OrderDetailsService { get; }
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailService;
+       
 
-        public ShoppingCartController(ShoppingCartService shoppingCartService, IOrderDetailsService orderDetailsService, IApplicationUserService userService, CartService cartService)
+        public ShoppingCartController(IUnitOfWork unitOfWork, IEmailSender emailService,ShoppingCartService shoppingCartService)
         {
-            _userService = userService;
-            OrderDetailsService = orderDetailsService;
+            _unitOfWork = unitOfWork;
+            _emailService = emailService;
             _shoppingCartService = shoppingCartService;
-            CartService = cartService;
         }
 
         public IActionResult Index()
@@ -71,14 +71,14 @@ namespace AudioStore.Web.Controllers
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
-            Tuple<ApplicationUser, IEnumerable<ShoppingCartItem>> tuple = new Tuple<ApplicationUser, IEnumerable<ShoppingCartItem>>(new ApplicationUser(), cart);
+            Tuple<Customer, IEnumerable<ShoppingCartItem>> tuple = new Tuple<Customer, IEnumerable<ShoppingCartItem>>(new Customer(), cart);
             return View(tuple);
         }
 
         // POST 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CheckoutAsync(ApplicationUser user)
+        public async Task<IActionResult> CheckoutAsync(Customer user)
         {
             if (!ModelState.IsValid)
             {
@@ -88,23 +88,25 @@ namespace AudioStore.Web.Controllers
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
 
-            await _userService.CreateUser(user);
-            int id = await _userService.GetApplicationUserId();
+            await _unitOfWork.Customer.AddAsync(user);
+            _unitOfWork.Save();
+            var userID = _unitOfWork.Customer.GetSingleOrDefaultAsync(u=>u.Email==user.Email);
+            int id = userID.Id;
             OrderDetails orderDetails = new OrderDetails()
             {
-                ApplicationUser = user,
+                Customer = user,
                 Carts = cart,
                 OrderDate = DateTime.Now,
-                ApplicationUserID = id
+                CustomerID = id
             };
             foreach (var c in cart)
             {
                 c.Id = 0;
             }
 
-            await OrderDetailsService.CreateOrderDetails(orderDetails);
-            SendOrderEmailAsync(orderDetails);
+            await _unitOfWork.OrderDetails.AddAsync(orderDetails);
 
+            SendOrderEmailAsync(orderDetails);
 
             _shoppingCartService.SetCart(cartId.ToString(), new List<ShoppingCartItem>());
             return RedirectToAction("OrderConfirmation");
@@ -117,35 +119,19 @@ namespace AudioStore.Web.Controllers
         #region Email
         private async Task SendOrderEmailAsync(OrderDetails orderDetails)
         {
-            string senderEmail = "nkola.icic@gmail.com";
-            string senderPassword = ("pcij ikvb fiyk omfq");
-            string smtpServer = "smtp.gmail.com";
-            int smtpPort = 587;
             try
             {
                 string path = "EmailTemplates/OrderDetails";
                 string body = await HttpContext.RenderViewAsync(path, orderDetails, false);
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(senderEmail);
-                mail.To.Add(orderDetails.ApplicationUser.Email);
-                mail.Subject = "Order Details";
-                mail.Body = body;
-                mail.IsBodyHtml = true;
-
-                SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);
-                smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                smtpClient.EnableSsl = true;
-                await smtpClient.SendMailAsync(mail);
+                string subject = "Order Details";
+                string to = orderDetails.Customer.Email;
+                await _emailService.SendEmailAsync(to, subject, body);
                 Console.WriteLine("Order email sent successfully.");
-
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine("Error sending email: " + ex.Message);
-
             }
-
         }
         #endregion
     }

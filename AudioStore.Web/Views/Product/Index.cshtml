@@ -1,4 +1,7 @@
-﻿<div class="container p-3">
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
             <h2>Product List</h2>
@@ -20,27 +23,7 @@
         </thead>
     </table>
 </div>
-@if (TempData["success"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        console.log("success");
-        toastr.success('@TempData["success"]');
 
-
-    </script>
-}
-@if (TempData["error"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        console.log("ERROR");
-        toastr.error('@TempData["error"]');
-
-    </script>
-}
 @section Scripts {
     <script src="~/js/product.js"></script>
 }

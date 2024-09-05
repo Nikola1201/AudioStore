@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Web", "AudioStor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Models", "AudioStore.Models\AudioStore.Models.csproj", "{7B9120D2-FC08-484E-A38F-27A19EF640EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.DataAccess", "AudioStore.DataAccess\AudioStore.DataAccess.csproj", "{AA592DF0-F69C-477E-BE78-A62313A6CEED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.DataAccess", "AudioStore.DataAccess\AudioStore.DataAccess.csproj", "{AA592DF0-F69C-477E-BE78-A62313A6CEED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{08D76FB8-0C5A-4D8A-B6FF-D6125B530D0B}"
 EndProject
@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7642B386-D912-4E4D-BE07-F58B50AEC616}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.Services", "AudioStore.Services\AudioStore.Services.csproj", "{E644335B-1426-4324-A797-CC6A5787174D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Services", "AudioStore.Services\AudioStore.Services.csproj", "{E644335B-1426-4324-A797-CC6A5787174D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioStore.Services.Interfaces", "AudioStore.Services.Interfaces\AudioStore.Services.Interfaces.csproj", "{E6F57697-3584-4245-A0C1-48A353654A72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioStore.Services.Interfaces", "AudioStore.Services.Interfaces\AudioStore.Services.Interfaces.csproj", "{E6F57697-3584-4245-A0C1-48A353654A72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

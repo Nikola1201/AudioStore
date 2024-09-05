@@ -1,4 +1,7 @@
-﻿@model AudioStore.Models.Product
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model AudioStore.Models.Product
 
 <form method="post" asp-action="Upsert" enctype="multipart/form-data">
     <input asp-for="ProductID" hidden />

@@ -1,8 +1,13 @@
 using AudioStore.DataAccess;
-using AudioStore.Models.ViewModels;
+using AudioStore.Models;
 using AudioStore.Services;
 using AudioStore.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Drawing.Text;
 
 namespace AudioStore.Web
 {
@@ -12,34 +17,49 @@ namespace AudioStore.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-        
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             // Add ef core context
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Add identity service
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequiredUniqueChars = 0;
+            });
 
             // Add HttpContextAccessor used for cookies in ShoppingCartService
             builder.Services.AddHttpContextAccessor();
 
-
-
             // Add services dependency injection
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<CartService>();
             builder.Services.AddScoped<ShoppingCartService>();
+            // Register the TokenCleanUpService
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-     
+            builder.Services.AddSingleton<IEmailSender, EmailService>();
+            builder.Services.AddRazorPages();
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
 
             var app = builder.Build();
             app.UseSession();
@@ -59,6 +79,7 @@ namespace AudioStore.Web
 
             });
 
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -72,15 +93,21 @@ namespace AudioStore.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-       
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
+            app.MapRazorPages();
+          
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+
         }
     }
 }
+
+

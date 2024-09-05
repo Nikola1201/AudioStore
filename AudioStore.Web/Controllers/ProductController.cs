@@ -1,12 +1,12 @@
 ﻿using AudioStore.Models;
-using AudioStore.Models.ViewModels;
-using AudioStore.Services;
 using AudioStore.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace AudioStore.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -33,7 +33,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                product = _unitOfWork.Product.GetProductById(id).Result;
+                product = _unitOfWork.Product.GetSingleOrDefaultAsync(p => p.ProductID == id).Result;
                 if (product == null)
                 {
                     return NotFound();
@@ -72,7 +72,8 @@ namespace AudioStore.Web.Controllers
                 }
                 if (obj.ProductID == 0)
                 {
-                    _unitOfWork.Product.CreateProduct(obj);
+                    _unitOfWork.Product.AddAsync(obj);
+                    _unitOfWork.Save();
                     TempData["success"] = "Product created successfully!";
                 }
                 else
@@ -95,7 +96,7 @@ namespace AudioStore.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<Product> products = await _unitOfWork.Product.GetAllProducts();
+            IEnumerable<Product> products = await _unitOfWork.Product.GetAllAsync();
             return Json(new { data = products });
         }
 
@@ -108,7 +109,7 @@ namespace AudioStore.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetManufacturers()
         {
-            var manufacturers = await _unitOfWork.Manufacturer.GetAllManufacturers();
+            var manufacturers = await _unitOfWork.Manufacturer.GetAllAsync();
             return Json(new { data = manufacturers });
         }
         [HttpGet]
@@ -119,9 +120,9 @@ namespace AudioStore.Web.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var obj = await _unitOfWork.Product.GetProductById(id);
+            var obj = await _unitOfWork.Product.GetSingleOrDefaultAsync(p => p.ProductID == id);
             if (obj == null)
             {
                 return Json(new { success = false, message = "Error while deleting!" });
@@ -131,7 +132,8 @@ namespace AudioStore.Web.Controllers
             {
                 System.IO.File.Delete(odlImagePath);
             }
-            await _unitOfWork.Product.DeleteProduct(id);
+            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Save();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion
