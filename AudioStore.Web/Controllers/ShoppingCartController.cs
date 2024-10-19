@@ -18,9 +18,8 @@ namespace AudioStore.Web.Controllers
         private readonly ShoppingCartService _shoppingCartService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailService;
-       
 
-        public ShoppingCartController(IUnitOfWork unitOfWork, IEmailSender emailService,ShoppingCartService shoppingCartService)
+        public ShoppingCartController(IUnitOfWork unitOfWork, IEmailSender emailService, ShoppingCartService shoppingCartService)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
@@ -29,34 +28,37 @@ namespace AudioStore.Web.Controllers
 
         public IActionResult Index()
         {
-
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
             return View(cart);
         }
+
         public IActionResult Minus(int id)
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
-            var cartItem = cart.Find(c => c.Id == id);
-            if (cartItem.Count <= 1)
+            var cartItem = cart?.Find(c => c.Id == id);
+            if (cartItem != null)
             {
-                cart.Remove(cartItem);
-                _shoppingCartService.SetCart(cartId, cart);
-            }
-            else
-            {
-                cart.Find(c => c.Id == id).Count--;
-                _shoppingCartService.SetCart(cartId, cart);
+                if (cartItem.Count <= 1)
+                {
+                    cart.Remove(cartItem);
+                    _shoppingCartService.SetCart(cartId, cart);
+                }
+                else
+                {
+                    cartItem.Count--;
+                    _shoppingCartService.SetCart(cartId, cart);
+                }
             }
             return RedirectToAction(nameof(Index));
-
         }
+
         public IActionResult Plus(int id)
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
-            var cartItem = cart.Find(c => c.Id == id);
+            var cartItem = cart?.Find(c => c.Id == id);
             if (cartItem != null)
             {
                 cartItem.Count++;
@@ -71,6 +73,21 @@ namespace AudioStore.Web.Controllers
         {
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
+            if (cart == null)
+            {
+                TempData["error"] = "Cart is empty.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            foreach (var c in cart)
+            {
+                if (!InStock(c))
+                {
+                    TempData["error"] = $"{c.Product.Name} out of stock";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
             Tuple<Customer, IEnumerable<ShoppingCartItem>> tuple = new Tuple<Customer, IEnumerable<ShoppingCartItem>>(new Customer(), cart);
             return View(tuple);
         }
@@ -83,28 +100,62 @@ namespace AudioStore.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return View();
-
             }
+
             var cartId = _shoppingCartService.GetOrCreateCartId();
             var cart = _shoppingCartService.GetCart(cartId);
+            if (cart == null)
+            {
+                TempData["error"] = "Cart is empty.";
+                return RedirectToAction(nameof(Index));
+            }
+            double totalPrice = 0;
 
-            await _unitOfWork.Customer.AddAsync(user);
-            _unitOfWork.Save();
-            var userID = _unitOfWork.Customer.GetSingleOrDefaultAsync(u=>u.Email==user.Email);
-            int id = userID.Id;
+            foreach (var c in cart)
+            {
+                if (!InStock(c))
+                {
+                    TempData["error"] = $"{c.Product.Name} out of stock";
+                    return RedirectToAction(nameof(Index));
+                }
+                totalPrice += c.Total;
+            }
+
+            foreach (var c in cart)
+            {
+                UpdateQuantity(c);
+            }
+            await _unitOfWork.SaveAsync();
+            int id = 0;
+            var existingUser = await _unitOfWork.Customer.GetAllAsync(u=>u.Email==user.Email);
+            if (existingUser == null)
+            {
+                await _unitOfWork.Customer.AddAsync(user);
+                await _unitOfWork.SaveAsync();
+                id = _unitOfWork.Customer.GetApplicationUserID(user);
+            }
+            else
+            {
+                id = existingUser?.First().CustomerID ?? 0;
+
+            }
+
             OrderDetails orderDetails = new OrderDetails()
             {
                 Customer = user,
-                Carts = cart,
+                CartItems = cart,
                 OrderDate = DateTime.Now,
-                CustomerID = id
+                CustomerID = id,
+                OrderTotal = totalPrice
             };
+
             foreach (var c in cart)
             {
                 c.Id = 0;
             }
 
             await _unitOfWork.OrderDetails.AddAsync(orderDetails);
+            await _unitOfWork.SaveAsync();
 
             SendOrderEmailAsync(orderDetails);
 
@@ -112,10 +163,13 @@ namespace AudioStore.Web.Controllers
             return RedirectToAction("OrderConfirmation");
         }
 
+      
+
         public IActionResult OrderConfirmation()
         {
             return View();
         }
+
         #region Email
         private async Task SendOrderEmailAsync(OrderDetails orderDetails)
         {
@@ -132,6 +186,21 @@ namespace AudioStore.Web.Controllers
             {
                 Console.WriteLine("Error sending email: " + ex.Message);
             }
+        }
+        #endregion
+
+        #region Check/Update Stock numbers
+        private bool InStock(ShoppingCartItem c)
+        {
+            if (c.Product.StockQuantity >= c.Count)
+                return true;
+            return false;
+        }
+        private void UpdateQuantity(ShoppingCartItem c)
+        {
+            var p = c.Product;
+            p.StockQuantity -= c.Count;
+            _unitOfWork.Product.UpdateProduct(p);
         }
         #endregion
     }

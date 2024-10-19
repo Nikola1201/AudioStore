@@ -16,7 +16,7 @@ namespace AudioStore.DataAccess.Repository
             this.dbSet = _db.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
         }

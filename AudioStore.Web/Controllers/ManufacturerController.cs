@@ -22,7 +22,7 @@ namespace AudioStore.Web.Controllers
             return View();
         }
         // GET
-        public IActionResult Upsert(int? id)
+        public async Task<IActionResult> UpsertAsync(int? id)
         {
             Manufacturer manufacturer = new Manufacturer();
             if (id == 0 || id == null)
@@ -31,7 +31,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                manufacturer = _unitOfWork.Manufacturer.GetSingleOrDefaultAsync(m => m.ManufacturerID == id).Result;
+                manufacturer = await _unitOfWork.Manufacturer.GetSingleOrDefaultAsync(m => m.ManufacturerID == id);
                 if (manufacturer == null)
                 {
                     return NotFound();
@@ -42,7 +42,7 @@ namespace AudioStore.Web.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Manufacturer manufacturer, IFormFile file)
+        public async Task<IActionResult> UpsertAsync(Manufacturer manufacturer, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -70,13 +70,13 @@ namespace AudioStore.Web.Controllers
 
                 if (manufacturer.ManufacturerID == 0)
                 {
-                    _unitOfWork.Manufacturer.AddAsync(manufacturer);
-                    _unitOfWork.Save();
+                    await _unitOfWork.Manufacturer.AddAsync(manufacturer);
+                    await _unitOfWork.SaveAsync();
                     TempData["success"] = "Manufacturer created successfully!";
                 }
                 else
                 {
-                    _unitOfWork.Manufacturer.UpdateManufacturer(manufacturer);
+                    await _unitOfWork.Manufacturer.UpdateManufacturer(manufacturer);
                     TempData["success"] = "Manufacturer updated successfully!";
                 }
                 return RedirectToAction("Index");
@@ -95,7 +95,7 @@ namespace AudioStore.Web.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
             var obj = _unitOfWork.Manufacturer.GetSingleOrDefaultAsync(m => m.ManufacturerID == id).Result;
             if (obj == null)
@@ -103,7 +103,7 @@ namespace AudioStore.Web.Controllers
                 return Json(new { success = false, message = "Error while deleting!" });
             }
             _unitOfWork.Manufacturer.Remove(obj);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

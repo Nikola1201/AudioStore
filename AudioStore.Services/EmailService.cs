@@ -29,7 +29,6 @@ namespace AudioStore.Services
                 Credentials = new NetworkCredential(senderEmail, senderPassword),
                 EnableSsl = true,
             };
-
         }
         public async Task SendEmailAsync(string to, string subject, string body)
         {

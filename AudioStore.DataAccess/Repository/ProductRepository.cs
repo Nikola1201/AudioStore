@@ -1,5 +1,7 @@
 ﻿using AudioStore.DataAccess.Repository.IRepository;
 using AudioStore.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace AudioStore.DataAccess.Repository
 {
@@ -11,11 +13,11 @@ namespace AudioStore.DataAccess.Repository
            _db = db;
         }
 
-        public async Task<Product> UpdateProduct(Product product)
+        public Product UpdateProduct(Product product)
         {
             _db.Update(product);
-            await _db.SaveChangesAsync();
             return product;
         }
+
     }
 }

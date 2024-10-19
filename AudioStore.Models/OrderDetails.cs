@@ -21,6 +21,8 @@ namespace AudioStore.Models
         public Customer Customer { get; set; }
         public DateTime OrderDate { get; set; }
         [Required]
-        public ICollection<ShoppingCartItem> Carts { get; set; } = new List<ShoppingCartItem>();
+        public ICollection<ShoppingCartItem> CartItems { get; set; } = new List<ShoppingCartItem>();
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+        public double OrderTotal { get; set; }
     }
 }

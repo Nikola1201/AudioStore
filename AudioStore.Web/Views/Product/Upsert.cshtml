@@ -30,6 +30,11 @@
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
+                <div class="mb-3 col-6">
+                    <label asp-for="StockQuantity"></label>
+                    <input asp-for="StockQuantity" class="form-control" />
+                    <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                </div>
 
                 <div class="mb-3 col-6">
                     <label asp-for="ImageUrl"></label>
@@ -41,7 +46,7 @@
                         <option disabled selected>Select Manufacturer</option>
                         <!-- Manufacturers will be loaded here  -->
                     </select>
-                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                    <span asp-validation-for="ManufacturerID" class="text-danger"></span>
                 </div>
                 <div class="mb-3 col-6">
                     <label asp-for="CategoryID"></label>
@@ -77,7 +82,7 @@
         <div class="col-2 pt-4">
             <img src="@Model.ImageUrl" class="img-fluid"
                  style="border-radius:5px; border:1px solid #bbb9b9">
-            </img>
+      
         </div>
     </div>
 

@@ -5,7 +5,7 @@ namespace AudioStore.DataAccess.Repository.IRepository
 {
     public interface IProductRepository:IRepository<Product>
     { 
-        public Task<Product> UpdateProduct(Product product);
+        public Product UpdateProduct(Product product);
 
     }
 }

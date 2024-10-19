@@ -4,6 +4,7 @@ using AudioStore.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AudioStore.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240905165649_addedOrderTotalToOrderDetails")]
+    partial class addedOrderTotalToOrderDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,9 +129,8 @@ namespace AudioStore.DataAccess.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrderStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
 
                     b.Property<double>("OrderTotal")
                         .HasColumnType("float");
@@ -449,7 +451,7 @@ namespace AudioStore.DataAccess.Migrations
             modelBuilder.Entity("AudioStore.Models.ShoppingCartItem", b =>
                 {
                     b.HasOne("AudioStore.Models.OrderDetails", "OrderDetails")
-                        .WithMany("CartItems")
+                        .WithMany("Carts")
                         .HasForeignKey("OrderDetailsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -523,7 +525,7 @@ namespace AudioStore.DataAccess.Migrations
 
             modelBuilder.Entity("AudioStore.Models.OrderDetails", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("AudioStore.Models.Product", b =>

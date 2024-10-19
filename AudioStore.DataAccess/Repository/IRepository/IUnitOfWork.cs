@@ -10,6 +10,6 @@ namespace AudioStore.Services.Interfaces
         IOrderDetailsRepository OrderDetails { get; }
         ICustomerRepository Customer { get; }
 
-        void Save();
+        Task SaveAsync();
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AudioStore.Web.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -78,8 +78,9 @@ namespace AudioStore.Web.Controllers
                 }
                 if (category.CategoryID == 0)
                 {
-                   await _unitOfWork.Category.AddAsync(category);
-                    _unitOfWork.Save();
+                    await _unitOfWork.Category.AddAsync(category);
+                    await _unitOfWork.SaveAsync();
+
                     TempData["success"] = "Category created successfully!";
 
                 }
@@ -111,7 +112,7 @@ namespace AudioStore.Web.Controllers
                 return Json(new { success = false, message = "Error while deleting!" });
             }
             _unitOfWork.Category.Remove(obj);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

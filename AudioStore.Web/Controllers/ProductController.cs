@@ -22,7 +22,7 @@ namespace AudioStore.Web.Controllers
             return View();
         }
         //GET
-        public IActionResult Upsert(int? id)
+        public async Task<IActionResult> UpsertAsync(int? id)
         {
 
             Product product = new Product();
@@ -33,7 +33,7 @@ namespace AudioStore.Web.Controllers
             }
             else
             {
-                product = _unitOfWork.Product.GetSingleOrDefaultAsync(p => p.ProductID == id).Result;
+                product = await _unitOfWork.Product.GetSingleOrDefaultAsync(p => p.ProductID == id);
                 if (product == null)
                 {
                     return NotFound();
@@ -45,7 +45,7 @@ namespace AudioStore.Web.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Product obj, IFormFile file)
+        public async Task<IActionResult> Upsert(Product obj, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -72,8 +72,7 @@ namespace AudioStore.Web.Controllers
                 }
                 if (obj.ProductID == 0)
                 {
-                    _unitOfWork.Product.AddAsync(obj);
-                    _unitOfWork.Save();
+                   await _unitOfWork.Product.AddAsync(obj);
                     TempData["success"] = "Product created successfully!";
                 }
                 else
@@ -81,6 +80,7 @@ namespace AudioStore.Web.Controllers
                     _unitOfWork.Product.UpdateProduct(obj);
                     TempData["success"] = "Product updated successfully!";
                 }
+               await _unitOfWork.SaveAsync();
 
                 return RedirectToAction("Index");
 
@@ -133,7 +133,7 @@ namespace AudioStore.Web.Controllers
                 System.IO.File.Delete(odlImagePath);
             }
             _unitOfWork.Product.Remove(obj);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             return Json(new { success = true, message = "Delete successful!" });
         }
         #endregion

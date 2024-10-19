@@ -1,0 +1,88 @@
+﻿@using AudioStore.Models;
+@model AudioStore.Models.ViewModels.OrderDetailEditVM
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <input asp-for="OrderID" hidden />
+    <input asp-for="CustomerID" hidden />
+    <div class="row">
+        <div class="col-10">
+            <div class="border p-3 mt-4 row">
+                <div class="col-12 pb-2">
+                    <h2 class="text-primary">Order Details</h2>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="CustomerName">Customer Name</label>
+                    <input asp-for="CustomerName" class="form-control" />
+                    <span asp-validation-for="CustomerName" class="text-danger" readonly></span>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" rows="3" class="form-control"></input>
+                    <span asp-validation-for="Email" class="text-danger" readonly></span>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="StreetAddress">Street Address</label>
+                    <input asp-for="StreetAddress" rows="3" class="form-control" readonly></input>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="City">City</label>
+                    <input asp-for="City" rows="3" class="form-control" readonly></input>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="PostalCode">Postal Code</label>
+                    <input asp-for="PostalCode" class="form-control" readonly />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="OrderDate">Order Date</label>
+                    <input asp-for="OrderDate" rows="3" class="form-control" readonly></input>
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="OrderTotal">Order Total</label>
+                    <input asp-for="OrderTotal" rows="3" class="form-control" readonly></input>
+                </div>
+         
+                <div class="form-group">
+                    <label asp-for="SelectedOrderStatus" class="col-md-2 control-label"></label>
+                    <div class="mb-3 col-6">
+                        <select asp-for="SelectedOrderStatus" asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                            <option value="">Select Status</option>
+                        </select>
+                        <span asp-validation-for="SelectedOrderStatus" class="text-danger" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+
+                    <a asp-controller="Order" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<h3>Order Details</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Product Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Count</td>
+                <td>@item.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

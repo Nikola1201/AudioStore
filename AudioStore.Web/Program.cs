@@ -23,7 +23,10 @@ namespace AudioStore.Web
 
             // Add ef core context
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+               .EnableSensitiveDataLogging());
+
+
 
             // Add identity service
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -99,7 +102,7 @@ namespace AudioStore.Web
             app.UseAuthorization();
 
             app.MapRazorPages();
-          
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

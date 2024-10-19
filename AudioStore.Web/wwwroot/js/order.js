@@ -7,25 +7,24 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": "/Product/GetAll",
+            "url": "/Order/GetAll",
             "type": "GET",
             "datatype": "json"
         },
         "columns": [
-            { "data": "name", "width": "20%" },
-            { "data": "category.name","defaultContent":"", "width": "20%" },
-            { "data": "manufacturer.name", "defaultContent": "", "width": "20%" },
-            { "data": "price", "width": "10%" },
-            { "data": "stockQuantity", "width": "10%" },
+            { "data": "customerName", "width": "20%" },
+            { "data": "orderDate", "defaultContent": "", "width": "20%" },
+            { "data": "orderStatus", "defaultContent": "", "width": "20%" },
+            { "data": "orderTotal", "width": "20%" },
             {
-                "data": "productID",
+                "data": "orderID",
                 "render": function (data, type, row, meta) {
                     return `
                             <div class="text-center">
-                                <a href="/Product/Upsert?id=${data}" class="btn btn-success text-white" style="cursor:pointer; width:100px;">
+                                <a href="/Order/Edit?id=${data}" class="btn btn-success text-white" style="cursor:pointer; width:100px;">
                                     <i class="far fa-edit"></i> Edit
                                 </a>
-                                <a onClick=Delete("/Product/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer; width:100px;">
+                                <a onClick=Delete("/Order/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer; width:100px;">
                                     <i class="far fa-trash-alt"></i> Delete
                                 </a>
                             </div>
